@@ -29,6 +29,7 @@ from harlequin.autocomplete import (
 )
 from harlequin.components.command_provider import PlainTextProvider
 from harlequin.components.text_modal import ErrorModal
+from harlequin.components.vim_text_editor import VimTextEditor
 from harlequin.editor_cache import BufferState, Cache, adopt_recovery, load_cache
 from harlequin.exception import HarlequinExternalError
 from harlequin.external import launch_external_editor
@@ -304,6 +305,10 @@ class CodeEditor(TextEditor, inherit_bindings=False):
             self.app.action_focus_data_catalog()
 
 
+class VimCodeEditor(CodeEditor, VimTextEditor, inherit_bindings=False):
+    """CodeEditor with Vim modal editing."""
+
+
 class EditorCollection(Vertical):
     """
     A row of tabs over a single editor. Switching tabs swaps the loaded buffer's
@@ -333,6 +338,7 @@ class EditorCollection(Vertical):
         disabled: bool = False,
         language: str = "sql",
         theme: str = "harlequin",
+        code_editor: str = "default",
     ):
         super().__init__(
             name=name,
@@ -341,6 +347,7 @@ class EditorCollection(Vertical):
             disabled=disabled,
         )
         self.language = language
+        self.code_editor = code_editor
         self.counter = 0
         self._word_completer: WordCompleter | None = None
         self._member_completer: MemberCompleter | None = None
@@ -353,7 +360,8 @@ class EditorCollection(Vertical):
         self.loaded_buffer_id: str | None = None
         self.tabs = Tabs()
         self.tabs.can_focus = False
-        self.editor = CodeEditor(id="buffer", language=language, theme=theme)
+        editor_cls = VimCodeEditor if code_editor == "vim" else CodeEditor
+        self.editor = editor_cls(id="buffer", language=language, theme=theme)
         self.theme = theme
 
     def compose(self) -> ComposeResult:

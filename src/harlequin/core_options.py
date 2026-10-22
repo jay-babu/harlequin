@@ -13,7 +13,13 @@ from typing import Any, Callable, Mapping, Sequence, TypedDict
 
 import click
 
-from harlequin.config import DEFAULT_ADAPTER, DEFAULT_SSH_TIMEOUT, UNLIMITED
+from harlequin.config import (
+    DEFAULT_ADAPTER,
+    DEFAULT_CODE_EDITOR,
+    DEFAULT_SSH_TIMEOUT,
+    UNLIMITED,
+    VALID_CODE_EDITORS,
+)
 
 HARLEQUIN = "harlequin"
 HSQL = "hsql"
@@ -200,6 +206,17 @@ def _unwrap_runtime_value(
 
 
 CORE_OPTIONS: Sequence[CoreOption] = (
+    CoreOption(
+        "code_editor",
+        ("--code-editor",),
+        harlequin=On(),
+        kwargs={
+            "default": DEFAULT_CODE_EDITOR,
+            "show_default": True,
+            "type": click.Choice(list(VALID_CODE_EDITORS), case_sensitive=False),
+            "help": "The code editor to use in the query editor (default or vim).",
+        },
+    ),
     CoreOption(
         name="version",
         group=Group.PER_REQUEST,

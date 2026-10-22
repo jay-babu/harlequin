@@ -325,6 +325,15 @@
           "description": "Color text output. `auto` follows the terminal and NO_COLOR.",
           "default": "never"
         },
+        "code_editor": {
+          "type": "string",
+          "enum": [
+            "default",
+            "vim"
+          ],
+          "default": "default",
+          "description": "The code editor to use (default or vim). Read by the harlequin IDE; hsql ignores it. See `harlequin --help`."
+        },
         "theme": {
           "description": "Read by the harlequin IDE; hsql ignores it. See `harlequin --help`."
         },

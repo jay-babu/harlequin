@@ -16,6 +16,8 @@ from harlequin.adapter import HarlequinAdapter
 from harlequin.colors import GREEN, PINK, PURPLE, VALID_THEMES, YELLOW
 from harlequin.config import (
     DEFAULT_ADAPTER,
+    DEFAULT_CODE_EDITOR,
+    VALID_CODE_EDITORS,
     Profile,
     load_profile_and_keymaps,
     merge_profile_with_cli,
@@ -40,6 +42,7 @@ from harlequin.exception import (
     pretty_print_error,
 )
 from harlequin.first_pass import attach_adapter_options, first_pass
+from harlequin.keymap import HarlequinKeyBinding, HarlequinKeyMap
 from harlequin.keys_app import HarlequinKeys
 from harlequin.locale_manager import set_locale
 from harlequin.options import AbstractOption
@@ -51,6 +54,17 @@ if TYPE_CHECKING:
     from harlequin.ssh import SshTunnel
 
 ALL_THEMES = ", ".join(VALID_THEMES.keys())
+
+# Used when Vim mode has no custom results keymap.
+DEFAULT_VIM_RESULTS_VIEWER_KEYMAP = HarlequinKeyMap(
+    name="vim",
+    bindings=[
+        HarlequinKeyBinding(keys="k,up", action="results_viewer.cursor_up"),
+        HarlequinKeyBinding(keys="down,j", action="results_viewer.cursor_down"),
+        HarlequinKeyBinding(keys="h,left", action="results_viewer.cursor_left"),
+        HarlequinKeyBinding(keys="l,right", action="results_viewer.cursor_right"),
+    ],
+)
 
 # configure the rich click interface (mostly --help options)
 DOCS_URL = "https://harlequin.sh/docs/getting-started"
@@ -142,6 +156,7 @@ HARLEQUIN_OPTION_GROUPS: list[OptionGroupDict] = [
             "--show-files",
             "--show-s3",
             "--theme",
+            "--code-editor",
             "--keymap-name",
             "--viewer-max-rows",
             "--limit",
@@ -467,7 +482,35 @@ def build_cli(argv: Sequence[str]) -> click.Command:
             )
             ctx.exit(2)
 
-        # off the config before the adapter is handed the rest of it
+        # Consume the editor option before handing the rest to the adapter.
+        code_editor: str = str(config.pop("code_editor", DEFAULT_CODE_EDITOR)).lower()
+        if code_editor not in VALID_CODE_EDITORS:
+            pretty_print_error(
+                HarlequinConfigError(
+                    msg=(
+                        f"Invalid value for 'code_editor': {code_editor!r}. "
+                        f"Must be one of: {', '.join(VALID_CODE_EDITORS)}."
+                    ),
+                    title="Harlequin Config Error",
+                )
+            )
+            ctx.exit(2)
+
+        # Add the Vim results keymap unless the user selected other keymaps.
+        if (
+            code_editor == "vim"
+            and keymap_names == DEFAULT_KEYMAP_NAMES
+            and "vim" not in keymap_names
+        ):
+            keymap_names = [*keymap_names, "vim"]
+
+        if "vim" in keymap_names and not any(
+            km.name == "vim" for km in user_defined_keymaps
+        ):
+            user_defined_keymaps = [
+                *user_defined_keymaps,
+                DEFAULT_VIM_RESULTS_VIEWER_KEYMAP,
+            ]
         try:
             ssh_config = take_ssh_keys(config, typed=explicitly_set)
             no_write_history = take_no_write_history(config)
@@ -521,6 +564,7 @@ def build_cli(argv: Sequence[str]) -> click.Command:
                 export_path=export_path,
                 ssh_tunnel=tunnel,
                 no_download_tzdata=no_download_tzdata,
+                code_editor=code_editor,
             )
             tui.run()
 

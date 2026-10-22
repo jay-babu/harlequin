@@ -104,6 +104,9 @@ minute of someone reading a screen. `--ssh-batch-mode` is what an unattended
 caller passes to fail at the first prompt instead of waiting this out.
 """
 
+DEFAULT_CODE_EDITOR = "default"
+VALID_CODE_EDITORS = ("default", "vim")
+
 Profile = Dict[str, Any]
 """One `[profiles.x]` table: a command's own options, plus its adapter's.
 

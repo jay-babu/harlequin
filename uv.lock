@@ -1380,6 +1380,7 @@ dependencies = [
     { name = "textual" },
     { name = "textual-fastdatatable" },
     { name = "textual-textarea" },
+    { name = "textual-vim-textarea" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "tomlkit" },
     { name = "tree-sitter" },
@@ -1475,6 +1476,7 @@ requires-dist = [
     { name = "textual", specifier = "==8.2.8" },
     { name = "textual-fastdatatable", specifier = "==0.19.3" },
     { name = "textual-textarea", specifier = "==0.18.5" },
+    { name = "textual-vim-textarea", specifier = ">=1.2.0" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.0.1" },
     { name = "tomlkit", specifier = ">=0.15.1,<0.16.0" },
     { name = "tree-sitter", specifier = ">=0.25,<0.27" },
@@ -4001,6 +4003,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f6/35/abb09e482584e1ee69de2fc9caf9936e448d1386367bcc4540b7279fe4f1/textual_textarea-0.18.5.tar.gz", hash = "sha256:21b5c700aee4cdd15c639e09edd737a62da026a138931c1f921c0805a6438967", size = 30568, upload-time = "2026-10-01T20:49:51.381Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/47/b5/bf49b326845c9b1d29e813f2b5ba6c3768b8dea0dc604c6a2758b1802be7/textual_textarea-0.18.5-py3-none-any.whl", hash = "sha256:2816df18bcf9325dadc8ba321e572bb6d89fd01540c55dbf09923e9252acb18e", size = 28398, upload-time = "2026-10-01T20:49:49.959Z" },
+]
+
+[[package]]
+name = "textual-vim-textarea"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "textual" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/26/6e/b6a0b5c3786c96f506904e5d2c0f9cf1b1e0aaf79558a31e40b25f91a1e5/textual_vim_textarea-1.2.0.tar.gz", hash = "sha256:4ed2400beb45b6d58f019c1e975e06407bcd2246c65ed78f601655525ca95b0b", size = 49744, upload-time = "2026-07-14T12:32:14.274Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/c7/5851006ae56b6ae3a36a45b97343a86a94f84b3f033b3006332e822eed84/textual_vim_textarea-1.2.0-py3-none-any.whl", hash = "sha256:0bcef47971a6353eece98793b822be1dc453d31980989de00a833e21790809f2", size = 17116, upload-time = "2026-07-14T12:32:12.672Z" },
 ]
 
 [[package]]

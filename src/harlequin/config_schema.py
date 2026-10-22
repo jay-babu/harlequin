@@ -32,6 +32,8 @@ import msgspec
 
 from harlequin.config import (
     DEFAULT_ADAPTER,
+    DEFAULT_CODE_EDITOR,
+    VALID_CODE_EDITORS,
     Config,
     adapter_options_model,
     sluggify_option_name,
@@ -201,6 +203,15 @@ def _profile(
         for param in command_options
         if param.name is not None
     }
+    properties.setdefault(
+        "code_editor",
+        {
+            "type": "string",
+            "enum": list(VALID_CODE_EDITORS),
+            "default": DEFAULT_CODE_EDITOR,
+            "description": "The code editor to use (default or vim). " + IDE_ONLY,
+        },
+    )
     for key in TUI_ONLY_KEYS:
         properties.setdefault(key, {"description": IDE_ONLY})
     for key in (*CLI_ONLY_SSH_KEYS, *CLI_ONLY_SESSION_KEYS):
